@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -28,4 +29,19 @@ public class Company {
 
     @OneToMany(mappedBy = "company")
     private Set<MediaItem> mediaItems = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Company company = (Company) o;
+        return Objects.equals(name, company.name) &&
+                Objects.equals(foundedDate, company.foundedDate) &&
+                Objects.equals(country, company.country);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, foundedDate, country);
+    }
 }
