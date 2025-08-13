@@ -3,6 +3,7 @@ package ua.dragunov.watchlyapi.model;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "genres")
@@ -15,4 +16,17 @@ public class Genre {
     private String name;
     @ManyToMany(mappedBy = "genres")
     private List<MediaItem> mediaItems;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Genre genre = (Genre) o;
+        return name.equals(genre.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 }
