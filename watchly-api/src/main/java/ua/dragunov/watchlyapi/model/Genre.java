@@ -11,7 +11,7 @@ public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "genres_seq", sequenceName = "genres_sequence", allocationSize = 10)
+    @SequenceGenerator(name = "genres_seq", sequenceName = "genres_sequence", allocationSize = 1)
     private long id;
     private String name;
     @ManyToMany(mappedBy = "genres")

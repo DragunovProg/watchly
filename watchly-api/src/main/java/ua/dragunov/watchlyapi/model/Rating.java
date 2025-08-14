@@ -8,8 +8,8 @@ import java.util.Objects;
 @Table(name = "rating")
 public class Rating {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "companies_seq")
-    @SequenceGenerator(name = "companies_seq", sequenceName = "companies_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rating_seq")
+    @SequenceGenerator(name = "rating_seq", sequenceName = "rating_sequence", allocationSize = 1)
     private long id;
 
     @ManyToOne
