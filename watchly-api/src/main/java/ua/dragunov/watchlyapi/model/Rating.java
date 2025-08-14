@@ -7,24 +7,21 @@ import java.util.Objects;
 @Entity
 @Table(name = "rating")
 public class Rating {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rating_seq")
-    @SequenceGenerator(name = "rating_seq", sequenceName = "rating_sequence", allocationSize = 1)
-    private long id;
+    @EmbeddedId
+    private RatingId id;
 
     @ManyToOne
+    @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
+    @MapsId("mediaItemId")
     @JoinColumn(name = "media_item_id")
     private MediaItem mediaItem;
 
     private int score;
 
-    public long getId() {
-        return id;
-    }
 
     public User getUser() {
         return user;

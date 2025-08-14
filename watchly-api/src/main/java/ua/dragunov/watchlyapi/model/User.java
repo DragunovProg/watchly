@@ -35,7 +35,7 @@ public class User {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "user",cascade = {CascadeType.REMOVE, CascadeType.MERGE})
-    private List<WatchlistItem> watchlistItems;
+    private Set<WatchlistItem> watchlistItems;
 
     public long getId() {
         return id;
@@ -105,7 +105,7 @@ public class User {
         roles.add(role);
     }
 
-    public List<WatchlistItem> getWatchlistItems() {
+    public Set<WatchlistItem> getWatchlistItems() {
         return watchlistItems;
     }
 

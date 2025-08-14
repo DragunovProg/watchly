@@ -7,24 +7,23 @@ import java.util.Objects;
 @Entity
 @Table(name = "watchlist_item")
 public class WatchlistItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "watchlist_item_seq", sequenceName = "watchlist_item_sequenct", allocationSize = 1)
-    private long id;
-    @Enumerated(EnumType.STRING)
-    private WatchStatus status;
+    @EmbeddedId
+    private WatchlistItemId id;
 
     @ManyToOne
+    @MapsId("media_item_id")
     @JoinColumn(name = "media_item_id")
     private MediaItem mediaItem;
 
     @ManyToOne
+    @MapsId("user_id")
     @JoinColumn(name = "user_id")
     private User user;
 
-    public long getId() {
-        return id;
-    }
+    @Enumerated(EnumType.STRING)
+    private WatchStatus status;
+
+
 
     public WatchStatus getStatus() {
         return status;

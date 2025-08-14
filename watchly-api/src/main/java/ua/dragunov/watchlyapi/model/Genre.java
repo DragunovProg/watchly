@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "genres")
@@ -15,7 +16,7 @@ public class Genre {
     private long id;
     private String name;
     @ManyToMany(mappedBy = "genres")
-    private List<MediaItem> mediaItems;
+    private Set<MediaItem> mediaItems;
 
     @Override
     public boolean equals(Object o) {
