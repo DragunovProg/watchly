@@ -1,13 +1,14 @@
 package ua.dragunov.watchlyapi.model;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "roles")
-public class Role {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "roles_seq", sequenceName = "roles_sequence", allocationSize = 1)
@@ -20,7 +21,8 @@ public class Role {
         return id;
     }
 
-    public String getName() {
+    @Override
+    public String getAuthority() {
         return name;
     }
 
@@ -44,4 +46,6 @@ public class Role {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+
 }

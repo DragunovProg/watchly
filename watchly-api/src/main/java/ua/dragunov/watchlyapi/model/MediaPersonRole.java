@@ -7,16 +7,16 @@ import java.util.Objects;
 @Entity
 @Table(name = "media_person_roles")
 public class MediaPersonRole {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_person_roles_seq")
-    @SequenceGenerator(name = "media_person_roles_seq", sequenceName = "media_person_roles_sequence", allocationSize = 1)
-    private Long id;
+    @EmbeddedId
+    private MediaPersonRoleId mediaPersonRoleId;
 
     @ManyToOne
+    @MapsId("mediaItemId")
     @JoinColumn(name = "media_item_id", nullable = false)
     private MediaItem mediaItem;
 
     @ManyToOne
+    @MapsId("personId")
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
@@ -26,9 +26,6 @@ public class MediaPersonRole {
     @Enumerated(EnumType.STRING)
     private MediaType mediaType;
 
-    public Long getId() {
-        return id;
-    }
 
     public MediaItem getMediaItem() {
         return mediaItem;
