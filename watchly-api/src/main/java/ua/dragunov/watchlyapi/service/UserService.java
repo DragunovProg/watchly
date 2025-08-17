@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.dragunov.watchlyapi.dto.UserCreateRequest;
+import ua.dragunov.watchlyapi.dto.UserResponse;
+import ua.dragunov.watchlyapi.dto.UserUpdateRequest;
 import ua.dragunov.watchlyapi.mapper.UserMapper;
 import ua.dragunov.watchlyapi.model.User;
 import ua.dragunov.watchlyapi.repository.UserRepository;
@@ -39,6 +41,22 @@ public class UserService implements UserDetailsService {
 
         User user = userMapper.toUser(registrationRequest);
         user.setPassword(passwordEncoder.encode(registrationRequest.password()));
+
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void update(String email, UserUpdateRequest userUpdateRequest) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+        userRepository.save(userMapper.toUser(userUpdateRequest, user));
+    }
+
+    @Transactional
+    public UserResponse findById(long id) {
+        return userMapper.toUserResponse(userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id)));
     }
 
     @Transactional

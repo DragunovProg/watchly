@@ -10,14 +10,14 @@ import java.util.Set;
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_seq")
     @SequenceGenerator(name = "roles_seq", sequenceName = "roles_sequence", allocationSize = 1)
-    private int id;
+    private long id;
     private String name;
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

@@ -11,12 +11,12 @@ public class WatchlistItem {
     private WatchlistItemId id;
 
     @ManyToOne
-    @MapsId("media_item_id")
+    @MapsId("mediaItemId")
     @JoinColumn(name = "media_item_id")
     private MediaItem mediaItem;
 
     @ManyToOne
-    @MapsId("user_id")
+    @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -11,9 +11,9 @@ import java.util.Set;
 @Table(name = "media_items")
 public class MediaItem {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "media_items_seq")
     @SequenceGenerator(name = "media_items_seq", sequenceName = "media_items_sequence", allocationSize = 1)
-    private int id;
+    private long id;
     private String title;
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -79,7 +79,7 @@ public class MediaItem {
         this.rating = rating;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

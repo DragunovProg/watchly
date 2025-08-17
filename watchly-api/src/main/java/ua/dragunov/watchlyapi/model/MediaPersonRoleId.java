@@ -4,11 +4,12 @@ import jakarta.persistence.Embeddable;
 
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @Embeddable
 public class MediaPersonRoleId implements Serializable {
     private long mediaItemId;
-    private long personId;
+    private UUID personId;
 
     public MediaPersonRoleId() {}
 
@@ -20,11 +21,11 @@ public class MediaPersonRoleId implements Serializable {
         this.mediaItemId = mediaItemId;
     }
 
-    public long getPersonId() {
+    public UUID getPersonId() {
         return personId;
     }
 
-    public void setPersonId(long personId) {
+    public void setPersonId(UUID personId) {
         this.personId = personId;
     }
 
