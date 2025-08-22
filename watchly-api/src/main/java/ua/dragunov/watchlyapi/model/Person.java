@@ -17,6 +17,9 @@ public class Person {
 
     private String fullName;
 
+    @Column(name = "photo_url")
+    private String photoUrl;
+
     @Column(columnDefinition = "TEXT")
     private String biography;
 
@@ -66,6 +69,18 @@ public class Person {
 
     public Set<MediaPersonRole> getMediaRoles() {
         return mediaRoles;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public void setMediaRoles(Set<MediaPersonRole> mediaRoles) {
+        this.mediaRoles = mediaRoles;
     }
 
     @Override

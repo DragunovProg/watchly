@@ -8,10 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity()
 @Table(name = "users")
@@ -34,15 +31,17 @@ public class User implements UserDetails {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     private LocalDate birthday;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @ManyToMany
     @JoinTable(name = "user_roles"
             , joinColumns = @JoinColumn(name = "user_id")
             , inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user",cascade = {CascadeType.REMOVE, CascadeType.MERGE})
-    private Set<WatchlistItem> watchlistItems;
+    private Set<WatchlistItem> watchlistItems = new HashSet<>();
 
     public long getId() {
         return id;
@@ -148,6 +147,14 @@ public class User implements UserDetails {
 
     public void addRole(Role role) {
         roles.add(role);
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     @Override

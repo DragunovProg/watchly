@@ -23,9 +23,6 @@ public class MediaPersonRole {
     @Enumerated(EnumType.STRING)
     private PersonRoleType personRoleType;
 
-    @Enumerated(EnumType.STRING)
-    private MediaType mediaType;
-
 
     public MediaItem getMediaItem() {
         return mediaItem;
@@ -39,16 +36,8 @@ public class MediaPersonRole {
         return personRoleType;
     }
 
-    public MediaType getMediaType() {
-        return mediaType;
-    }
-
     public void setPersonRoleType(PersonRoleType personRoleType) {
         this.personRoleType = personRoleType;
-    }
-
-    public void setMediaType(MediaType mediaType) {
-        this.mediaType = mediaType;
     }
 
     @Override

@@ -16,6 +16,10 @@ public interface UserMapper {
     @Mapping(target = "password", ignore = true)
     User toUser(UserCreateRequest registerRequest);
 
+    @Mapping(target = "firstName", source = "update.firstName")
+    @Mapping(target = "lastName", source = "update.lastName")
+    @Mapping(target = "gender", source = "update.gender")
+    @Mapping(target = "birthday", source = "update.birthday")
     User toUser(UserUpdateRequest update, @MappingTarget User user);
 
     UserResponse toUserResponse(User user);

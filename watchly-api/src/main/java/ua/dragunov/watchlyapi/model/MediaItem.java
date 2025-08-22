@@ -18,11 +18,14 @@ public class MediaItem {
     @Column(columnDefinition = "TEXT")
     private String description;
     private String poster;
-    @Column(name = "created_at")
-    private ZonedDateTime createdAt;
+    @Enumerated(EnumType.STRING)
+    private MediaType mediaType;
     @Column(name = "release_year")
     private int releaseYear;
     private int rating;
+
+    @Column(name = "created_at")
+    private ZonedDateTime createdAt;
 
     @ManyToMany
     @JoinTable(
@@ -30,7 +33,7 @@ public class MediaItem {
             joinColumns = @JoinColumn(name = "media_item_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
-    private Set<Genre> genres;
+    private Set<Genre> genres = new HashSet<>();
 
     @OneToMany(mappedBy = "mediaItem", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     private Set<MediaPersonRole> persons  = new HashSet<>();
