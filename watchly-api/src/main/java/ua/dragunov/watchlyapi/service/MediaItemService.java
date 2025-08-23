@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.dragunov.watchlyapi.dto.MediaItemPreviewResponse;
 import ua.dragunov.watchlyapi.dto.MediaItemResponse;
@@ -11,8 +12,9 @@ import ua.dragunov.watchlyapi.dto.MediaItemSearchRequest;
 import ua.dragunov.watchlyapi.mapper.MediaItemMapper;
 import ua.dragunov.watchlyapi.model.MediaItem;
 import ua.dragunov.watchlyapi.repository.MediaItemRepository;
-import ua.dragunov.watchlyapi.repository.MediaItemSpecifications;
+import ua.dragunov.watchlyapi.repository.specification.MediaItemSpecifications;
 
+@Service
 public class MediaItemService {
     private final MediaItemRepository mediaItemRepository;
     private final MediaItemMapper mediaItemMapper;

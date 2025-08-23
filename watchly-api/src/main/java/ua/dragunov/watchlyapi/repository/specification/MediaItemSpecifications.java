@@ -1,4 +1,4 @@
-package ua.dragunov.watchlyapi.repository;
+package ua.dragunov.watchlyapi.repository.specification;
 
 import org.springframework.data.jpa.domain.Specification;
 import ua.dragunov.watchlyapi.model.MediaItem;
@@ -25,6 +25,7 @@ public class MediaItemSpecifications {
     public static Specification<MediaItem> hasGenres(List<String> genres) {
         return (root, query, cb) -> {
             if (genres == null || genres.isEmpty()) return null;
+
             return root.join("genres").get("name").in(genres);
         };
     }
