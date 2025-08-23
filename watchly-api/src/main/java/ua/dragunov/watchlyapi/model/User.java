@@ -40,7 +40,7 @@ public class User implements UserDetails {
             , inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user",cascade = {CascadeType.REMOVE, CascadeType.MERGE})
+    @OneToMany(mappedBy = "user",cascade = {CascadeType.REMOVE, CascadeType.MERGE}, orphanRemoval = true)
     private Set<WatchlistItem> watchlistItems = new HashSet<>();
 
     public long getId() {
