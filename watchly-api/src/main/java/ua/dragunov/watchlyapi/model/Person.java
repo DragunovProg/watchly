@@ -28,6 +28,9 @@ public class Person {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @Column(name = "external_id")
+    private long externalId;
+
     @OneToMany(mappedBy = "person")
     private Set<MediaPersonRole> mediaRoles = new HashSet<>();
 
