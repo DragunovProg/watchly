@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.dragunov.watchlyapi.dto.MediaItemPreviewResponse;
 import ua.dragunov.watchlyapi.dto.MediaItemResponse;
 import ua.dragunov.watchlyapi.dto.MediaItemSearchRequest;
+import ua.dragunov.watchlyapi.exception.EntityNotFoundException;
+import ua.dragunov.watchlyapi.external.tmdb.TmdbClient;
 import ua.dragunov.watchlyapi.mapper.MediaItemMapper;
 import ua.dragunov.watchlyapi.model.MediaItem;
 import ua.dragunov.watchlyapi.repository.MediaItemRepository;
@@ -18,15 +20,17 @@ import ua.dragunov.watchlyapi.repository.specification.MediaItemSpecifications;
 public class MediaItemService {
     private final MediaItemRepository mediaItemRepository;
     private final MediaItemMapper mediaItemMapper;
+    private final TmdbClient tmdbClient;
 
-    public MediaItemService(MediaItemRepository mediaItemRepository, MediaItemMapper mediaItemMapper) {
+    public MediaItemService(MediaItemRepository mediaItemRepository, MediaItemMapper mediaItemMapper, TmdbClient tmdbClient) {
         this.mediaItemRepository = mediaItemRepository;
         this.mediaItemMapper = mediaItemMapper;
+        this.tmdbClient = tmdbClient;
     }
 
     @Transactional(readOnly = true)
     public MediaItemResponse findById(Long id) {
-        MediaItem mediaItem = mediaItemRepository.findById(id).orElseThrow(() -> new RuntimeException("Media item not found"));
+        MediaItem mediaItem = mediaItemRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Media item not found with id" + id));
 
         return mediaItemMapper.toResponse(mediaItem);
     }
@@ -42,6 +46,7 @@ public class MediaItemService {
 
         Page<MediaItemPreviewResponse> mediaItems = mediaItemRepository.findAll(spec, pageable).map(mediaItemMapper::toPreview);
 
+        tmdbClient.findMediaByParameters(mediaItemSearchRequest.searchQuery(), mediaItemSearchRequest.releaseYear());
 
         return mediaItems;
     }

@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.dragunov.watchlyapi.dto.UserCreateRequest;
 import ua.dragunov.watchlyapi.dto.UserResponse;
 import ua.dragunov.watchlyapi.dto.UserUpdateRequest;
+import ua.dragunov.watchlyapi.exception.DuplicateEntityException;
+import ua.dragunov.watchlyapi.exception.EntityNotFoundException;
 import ua.dragunov.watchlyapi.mapper.UserMapper;
 import ua.dragunov.watchlyapi.model.Role;
 import ua.dragunov.watchlyapi.model.User;
@@ -45,13 +47,13 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserResponse register(UserCreateRequest registrationRequest) {
         if (userRepository.existsByEmail(registrationRequest.email())) {
-            throw new RuntimeException("Email address already in use");
+            throw new DuplicateEntityException("Email address " + registrationRequest.email() + " already in use");
         }
 
         User user = userMapper.toUser(registrationRequest);
         user.setPassword(passwordEncoder.encode(registrationRequest.password()));
 
-        Role role = roleRepository.findByName("ROLE_USER").orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role = roleRepository.findByName("ROLE_USER").orElseThrow(() -> new EntityNotFoundException("Role not found"));
 
 
         user.addRole(role);

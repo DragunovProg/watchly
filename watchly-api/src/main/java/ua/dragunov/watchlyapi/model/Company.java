@@ -27,6 +27,9 @@ public class Company {
     @Enumerated(EnumType.STRING)
     private CompanyType roleType;
 
+    @Column(name = "external_id")
+    private long externalId;
+
     @OneToMany(mappedBy = "company")
     private Set<MediaItem> mediaItems = new HashSet<>();
 

@@ -22,7 +22,9 @@ public class MediaItem {
     private MediaType mediaType;
     @Column(name = "release_year")
     private int releaseYear;
-    private int rating;
+    private double rating;
+    @Column(name = "external_id")
+    private long externalId;
 
     @Column(name = "created_at")
     private ZonedDateTime createdAt;
@@ -40,7 +42,7 @@ public class MediaItem {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", nullable = false)
-    private Company company;
+    private Company company = new Company();
 
     public String getTitle() {
         return title;
@@ -74,11 +76,11 @@ public class MediaItem {
         this.releaseYear = releaseYear;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 

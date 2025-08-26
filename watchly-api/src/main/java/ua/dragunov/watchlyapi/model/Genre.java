@@ -15,6 +15,8 @@ public class Genre {
     @SequenceGenerator(name = "genres_seq", sequenceName = "genres_sequence", allocationSize = 1)
     private long id;
     private String name;
+    @Column(name = "external_id")
+    private long externalId;
     @ManyToMany(mappedBy = "genres")
     private Set<MediaItem> mediaItems;
 
