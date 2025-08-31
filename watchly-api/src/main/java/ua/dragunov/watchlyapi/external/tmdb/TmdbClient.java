@@ -1,77 +1,85 @@
 package ua.dragunov.watchlyapi.external.tmdb;
 
-import org.hibernate.query.Page;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import ua.dragunov.watchlyapi.external.tmdb.config.TmdbProperties;
 import ua.dragunov.watchlyapi.external.tmdb.dto.CreditResponse;
 import ua.dragunov.watchlyapi.external.tmdb.dto.MovieDetailsResponse;
 import ua.dragunov.watchlyapi.external.tmdb.dto.MovieSearchResponse;
-import ua.dragunov.watchlyapi.external.tmdb.dto.MovieSearchResult;
-import ua.dragunov.watchlyapi.model.MediaItem;
 
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TmdbClient {
-    @Value("${tmdb.api.key}")
-    private String apiKey;
-    @Value(("${tmdb.base.url}"))
-    private String baseUrl;
-    @Value(("${tmdb.base.image.url}"))
-    private String imageUrl;
-    private RestTemplate restTemplate;
+    private static final Logger logger = LoggerFactory.getLogger(TmdbClient.class);
 
-    public TmdbClient(RestTemplate restTemplate) {
+    private final TmdbProperties props;
+    private final HttpHeaders headers;
+    private final RestTemplate restTemplate;
+
+    public TmdbClient(RestTemplate restTemplate, TmdbProperties props) {
         this.restTemplate = restTemplate;
+        this.props = props;
+
+        headers = new HttpHeaders();
+        headers.setBearerAuth(props.getApiKey());
     }
 
 
-    public MediaItem findMediaByParameters(String query, int releaseYear) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(apiKey);
+    public MovieSearchResponse search(String query, Integer page, List<Long> genresId) {
+        String searchEndpoint = String.format("%s/search/movie?query=%s&page=%d", props.getBaseUrl(), query, page);
+        logger.debug("request to {} endpoint ", searchEndpoint);
 
-
-        ResponseEntity<MovieSearchResponse> response = restTemplate.exchange(
-                String.format("%s/search/movie?query=%s&year=%s", baseUrl, query, releaseYear),
+        MovieSearchResponse result = Optional.ofNullable(restTemplate.exchange(
+                searchEndpoint,
                 HttpMethod.GET,
-                new HttpEntity<Void>(headers),
+                new HttpEntity<>(headers),
                 MovieSearchResponse.class
-        );
+        ).getBody()).orElseThrow( () -> new RuntimeException("Search Failed"));
 
-        if (response.getStatusCode().isError()) {
-            throw  new RuntimeException("tmdb search error with code " + response.getStatusCode());
+        if (result.results().isEmpty()) {
+            return result;
         }
 
-        MovieSearchResponse movieSearchResults = response.getBody();
+        return new MovieSearchResponse(
+                result.results().stream()
+                        .filter(movieSearchResult -> {
+                            if (genresId == null)
+                                return true;
 
-        List<MovieDetailsResponse> details = movieSearchResults.results().stream()
-                .map(movieSearchResult -> {
-                    return restTemplate.exchange(
-                            String.format("%s/movie/%d", baseUrl, movieSearchResult.id()),
-                            HttpMethod.GET,
-                            new HttpEntity<Void>(headers),
-                            MovieDetailsResponse.class
-                    ).getBody();
-                })
-                .toList();
-
-        List<CreditResponse> credits = movieSearchResults.results().stream()
-                .map(movieSearchResult -> {
-                    return restTemplate.exchange(
-                            String.format("%s/movie/%d/credits", baseUrl, movieSearchResult.id()),
-                            HttpMethod.GET,
-                            new HttpEntity<Void>(headers),
-                            CreditResponse.class
-                    ).getBody();
-                })
-                .toList();
-
-        return null;
+                            return new HashSet<>(movieSearchResult
+                                    .genresIds()).containsAll(genresId);
+                        })
+                        .toList()
+                ,
+                result.page(),
+                result.totalPages(),
+                result.totalResults()
+        );
     }
+
+    public MovieDetailsResponse findMovieDetails(long movieId) {
+        return restTemplate.exchange(
+                String.format("%s/movie/%d", props.getBaseUrl(), movieId),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                MovieDetailsResponse.class
+        ).getBody();
+    }
+
+    public CreditResponse findCreditsByMovie(long movieId) {
+        return restTemplate.exchange(
+                String.format("%s/movie/%d/credits", props.getBaseUrl(), movieId),
+                HttpMethod.GET,
+                new HttpEntity<>(headers),
+                CreditResponse.class
+        ).getBody();
+    }
+
+
 }

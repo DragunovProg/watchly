@@ -112,6 +112,10 @@ public class MediaItem {
         return persons;
     }
 
+    public void addMediaPersonRole(MediaPersonRole mediaPersonRole) {
+        this.persons.add(mediaPersonRole);
+    }
+
     public void setPersons(Set<MediaPersonRole> persons) {
         this.persons = persons;
     }
@@ -122,6 +126,22 @@ public class MediaItem {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public MediaType getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(MediaType mediaType) {
+        this.mediaType = mediaType;
+    }
+
+    public long getExternalId() {
+        return externalId;
+    }
+
+    public void setExternalId(long externalId) {
+        this.externalId = externalId;
     }
 
     @Override

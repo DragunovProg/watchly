@@ -16,5 +16,6 @@ public record MovieDetailsResponse(
         List<TmdbGenreResponse> genres,
         @JsonProperty("production_companies")
         List<TmdbCompanyResponse> productionCompanies
+
 ) {
 }

@@ -3,6 +3,7 @@ package ua.dragunov.watchlyapi.external.tmdb.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 public record MovieSearchResult(
@@ -14,5 +15,7 @@ public record MovieSearchResult(
         @JsonProperty("poster_path")
         String poster,
         @JsonProperty("release_date")
-        LocalDate releaseDate
+        LocalDate releaseDate,
+        @JsonProperty("genres_ids")
+        List<Long> genresIds
 ) {}

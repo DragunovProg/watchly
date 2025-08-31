@@ -1,4 +1,4 @@
-package ua.dragunov.watchlyapi.external.tmdb.config;
+package ua.dragunov.watchlyapi.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class ExternalApiGlobalConfig {
-
+public class GlobalConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.build();

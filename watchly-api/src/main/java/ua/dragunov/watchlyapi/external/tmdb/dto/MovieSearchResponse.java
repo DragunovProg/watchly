@@ -8,5 +8,7 @@ public record MovieSearchResponse(
         List<MovieSearchResult> results,
         int page,
         @JsonProperty("total_pages")
-        int totalPages
+        int totalPages,
+        @JsonProperty("total_results")
+        int totalResults
 ) {}

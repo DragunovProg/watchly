@@ -5,5 +5,5 @@ public record MediaItemPreviewResponse(
         String title,
         int releaseYear,
         String poster,
-        int rating
+        double rating
 ) {}

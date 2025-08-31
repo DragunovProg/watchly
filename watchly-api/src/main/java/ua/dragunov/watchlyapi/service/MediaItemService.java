@@ -10,6 +10,7 @@ import ua.dragunov.watchlyapi.dto.MediaItemPreviewResponse;
 import ua.dragunov.watchlyapi.dto.MediaItemResponse;
 import ua.dragunov.watchlyapi.dto.MediaItemSearchRequest;
 import ua.dragunov.watchlyapi.exception.EntityNotFoundException;
+import ua.dragunov.watchlyapi.external.ExternalApiManager;
 import ua.dragunov.watchlyapi.external.tmdb.TmdbClient;
 import ua.dragunov.watchlyapi.mapper.MediaItemMapper;
 import ua.dragunov.watchlyapi.model.MediaItem;
@@ -20,12 +21,11 @@ import ua.dragunov.watchlyapi.repository.specification.MediaItemSpecifications;
 public class MediaItemService {
     private final MediaItemRepository mediaItemRepository;
     private final MediaItemMapper mediaItemMapper;
-    private final TmdbClient tmdbClient;
-
-    public MediaItemService(MediaItemRepository mediaItemRepository, MediaItemMapper mediaItemMapper, TmdbClient tmdbClient) {
+    private final ExternalApiManager externalApiManager;
+    public MediaItemService(MediaItemRepository mediaItemRepository, MediaItemMapper mediaItemMapper, ExternalApiManager externalApiManager) {
         this.mediaItemRepository = mediaItemRepository;
         this.mediaItemMapper = mediaItemMapper;
-        this.tmdbClient = tmdbClient;
+        this.externalApiManager = externalApiManager;
     }
 
     @Transactional(readOnly = true)
@@ -42,12 +42,23 @@ public class MediaItemService {
                 .and(MediaItemSpecifications.releasedIn(mediaItemSearchRequest.releaseYear()))
                 .and(MediaItemSpecifications.hasGenres(mediaItemSearchRequest.genres()));
 
-        Pageable pageable = PageRequest.of(mediaItemSearchRequest.page(), mediaItemSearchRequest.size());
+        Pageable pageable = PageRequest.of(mediaItemSearchRequest.page(), mediaItemSearchRequest.size() == 0 ? 20 : mediaItemSearchRequest.size());
 
         Page<MediaItemPreviewResponse> mediaItems = mediaItemRepository.findAll(spec, pageable).map(mediaItemMapper::toPreview);
 
-        tmdbClient.findMediaByParameters(mediaItemSearchRequest.searchQuery(), mediaItemSearchRequest.releaseYear());
+        if (mediaItems.getTotalElements() != 0) {
+            return mediaItems;
+        }
 
-        return mediaItems;
+        return externalApiManager.search(mediaItemSearchRequest.searchQuery(), null , mediaItemSearchRequest.page())
+                .map(externalMediaItemSearchResult -> {
+                    return new MediaItemPreviewResponse(
+                            externalMediaItemSearchResult.externalId(),
+                            externalMediaItemSearchResult.title(),
+                            externalMediaItemSearchResult.releaseDate().getYear(),
+                            externalMediaItemSearchResult.poster(),
+                            0
+                    );
+                });
     }
 }
